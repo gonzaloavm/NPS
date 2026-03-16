@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: nps-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=TuPasswordFuerte123!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - nps-network
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 1433 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./nps.backend
+      dockerfile: Dockerfile
+    container_name: nps-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=NPSDb;User Id=sa;Password=TuPasswordFuerte123!;TrustServerCertificate=True;
+      - Jwt__Key=supersecretkeywithatleast32characterslong!
+      - Jwt__Issuer=YourIssuer
+      - Jwt__Audience=YourAudience
+      - Jwt__ExpiresInMinutes=5
+      - Jwt__RefreshTokenExpirationDays=7
+    ports:
+      - "5000:80"
+    depends_on:
+      sqlserver:
+        condition: service_started
+    networks:
+      - nps-network
+
+  frontend:
+    build:
+      context: ./nps.frontend
+      dockerfile: Dockerfile
+    container_name: nps-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - nps-network
+    environment:
+      - API_URL=http://localhost:5000
+
+volumes:
+  sqlserver-data:
+
+networks:
+  nps-network:
+    driver: bridge

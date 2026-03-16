@@ -1,0 +1,6 @@
+[submodule "nps.backend"]
+	path = nps.backend
+	url = https://github.com/gonzaloavm/nps.backend.git
+[submodule "nps.frontend"]
+	path = nps.frontend
+	url = https://github.com/gonzaloavm/nps.frontend.git
