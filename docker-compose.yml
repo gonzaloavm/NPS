@@ -6,7 +6,7 @@ services:
     container_name: nps-sqlserver
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=TuPasswordFuerte123!
+      - SA_PASSWORD=UnaPasswordFuerte123!
       - MSSQL_PID=Express
     ports:
       - "1433:1433"
@@ -29,7 +29,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=80
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=NPSDb;User Id=sa;Password=TuPasswordFuerte123!;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=NPSDb;User Id=sa;Password=UnaPasswordFuerte123!;TrustServerCertificate=True;
       - Jwt__Key=supersecretkeywithatleast32characterslong!
       - Jwt__Issuer=YourIssuer
       - Jwt__Audience=YourAudience
